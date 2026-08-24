@@ -1,5 +1,5 @@
 [project]
-name = "synclair-core"
+name = "synclair-network"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -7,13 +7,10 @@ authors = [
     { name = "Sara Baccino", email = "baccinosara.2000@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = [
-    "polars>=1.43.2",
-    "pydantic>=2.13.4",
-]
+dependencies = []
 
 [project.scripts]
-synclair-core = "synclair_core:main"
+synclair-network = "synclair_network:main"
 
 [build-system]
 requires = ["uv_build>=0.9.13,<0.10.0"]

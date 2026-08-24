@@ -13,12 +13,4 @@ dev = [
 ]
 
 [tool.uv.workspace]
-members = [
-    "packages/synclair_core",
-    "packages/synclair_structure",
-    "packages/synclair_discovery",
-    "packages/synclair_matching",
-    "packages/synclair_reporting",
-    "packages/synclair_validation",
-    "packages/synclair-gui",
-]
+members = ["packages/*"]
