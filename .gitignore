@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+
+# uv
+.uv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+
+# Local configuration / secrets
+.env
+.env.*
+!.env.example
+
+# Local datasets
+data/
+datasets/
+*.csv
+*.xlsx
+*.parquet
+
+# Generated reports/artifacts
+artifacts/
+outputs/
+reports/
+
+# Temporary
+tmp/
+temp/

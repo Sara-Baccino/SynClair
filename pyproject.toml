@@ -1,0 +1,24 @@
+[project]
+name = "synclair"
+version = "0.1.0"
+requires-python = ">=3.12"
+
+[dependency-groups]
+
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+    "pre-commit",
+]
+
+[tool.uv.workspace]
+members = [
+    "packages/synclair_core",
+    "packages/synclair_structure",
+    "packages/synclair_discovery",
+    "packages/synclair_matching",
+    "packages/synclair_reporting",
+    "packages/synclair_validation",
+    "packages/synclair-gui",
+]
