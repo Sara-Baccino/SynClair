@@ -1,0 +1,14 @@
+Attivare backend portale 8000:
+
+cd packages/synclair-gui
+uv run uvicorn src.synclair_gui.app:app --reload --host 127.0.0.1 --port 8000
+
+
+Attivare frontend: http://localhost:5173
+
+/Desktop/SynClair/packages/synclair-gui/frontend (main)
+$ npx tsc --NoEmit
+$ npm run dev
+
+
+Credenziali: demo / synclair-demo.

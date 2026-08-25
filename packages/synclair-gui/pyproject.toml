@@ -7,7 +7,13 @@ authors = [
     { name = "Sara Baccino", email = "baccinosara.2000@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "fastapi>=0.141.1",
+    "synclair-core",
+    "synclair-structure",
+    "uvicorn>=0.52.4",
+    "pyjwt>=2.9",
+]
 
 [project.scripts]
 synclair-gui = "synclair_gui:main"
@@ -15,3 +21,11 @@ synclair-gui = "synclair_gui:main"
 [build-system]
 requires = ["uv_build>=0.9.13,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.uv.sources]
+synclair-core = { workspace = true, editable = true }
+synclair-structure = { workspace = true, editable = true }
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
