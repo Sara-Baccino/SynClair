@@ -81,3 +81,44 @@ def test_upload_without_token_returns_401(client: TestClient) -> None:
 def test_parse_config_without_token_returns_401(client: TestClient) -> None:
     response = client.post("/datasets/parse-config", json={"dataset_id": "irrelevant"})
     assert response.status_code == 401
+
+def test_get_dataset_returns_existing_dataset(client: TestClient, auth_headers: dict[str, str]) -> None:
+    upload_response = client.post(
+        "/datasets/upload",
+        files={"file": ("sample.csv", io.BytesIO(_sample_csv_bytes()), "text/csv")},
+        headers=auth_headers,
+    )
+    dataset_id = upload_response.json()["dataset_id"]
+
+    response = client.get(f"/datasets/{dataset_id}", headers=auth_headers)
+    assert response.status_code == 200
+
+    body = response.json()
+    assert body["dataset_id"] == dataset_id
+    assert body["filename"] == "sample.csv"
+    assert body["has_data_config"] is False
+
+
+def test_get_dataset_reflects_config_presence_after_parse(
+    client: TestClient, auth_headers: dict[str, str]
+) -> None:
+    upload_response = client.post(
+        "/datasets/upload",
+        files={"file": ("sample.csv", io.BytesIO(_sample_csv_bytes()), "text/csv")},
+        headers=auth_headers,
+    )
+    dataset_id = upload_response.json()["dataset_id"]
+    client.post("/datasets/parse-config", json={"dataset_id": dataset_id}, headers=auth_headers)
+
+    response = client.get(f"/datasets/{dataset_id}", headers=auth_headers)
+    assert response.json()["has_data_config"] is True
+
+
+def test_get_dataset_returns_404_for_unknown_id(client: TestClient, auth_headers: dict[str, str]) -> None:
+    response = client.get("/datasets/does-not-exist", headers=auth_headers)
+    assert response.status_code == 404
+
+
+def test_get_dataset_requires_authentication(client: TestClient) -> None:
+    response = client.get("/datasets/irrelevant")
+    assert response.status_code == 401

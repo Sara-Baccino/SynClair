@@ -243,3 +243,36 @@ def parse_config(
             errors=validation.errors,
         ),
     )
+
+# --- nuovo DTO, vicino agli altri DTO del file ---
+class DatasetDetailResponse(BaseModel):
+    dataset_id: str
+    filename: str
+    n_rows: int
+    n_columns: int
+    has_data_config: bool
+
+
+# --- nuovo endpoint, dopo parse_config ---
+@router.get("/{dataset_id}", response_model=DatasetDetailResponse)
+def get_dataset(
+    dataset_id: str,
+    current_user: CurrentUserResponse = Depends(get_current_user),
+) -> DatasetDetailResponse:
+    """Read-only existence/state check for a dataset, used by the frontend's
+    DatasetGuard to verify against real backend state (not just local
+    frontend context) whether a dataset_id is still valid -- e.g. after a
+    page refresh or back/forward navigation.
+    """
+    try:
+        record = dataset_store.get(dataset_id)
+    except DatasetNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    return DatasetDetailResponse(
+        dataset_id=record.dataset_id,
+        filename=record.filename,
+        n_rows=record.dataframe.height,
+        n_columns=record.dataframe.width,
+        has_data_config=record.data_config is not None,
+    )

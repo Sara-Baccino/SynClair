@@ -114,7 +114,10 @@ export interface ParseConfigResponse {
 // since Workspace Step 2 and the demo endpoint both send this as part
 // of the request body.
 // ======================================================================
-
+export type AnalysisInputSource =
+  | { kind: "toy"; datasetName: DemoDatasetName }
+  | { kind: "artifact"; label: string; columns: string[]; rows: Record<string, unknown>[] };
+  
 export type ClusteringAlgorithmName =
   | "hdbscan"
   | "kmeans"
@@ -270,6 +273,14 @@ export interface StructureModuleConfig {
   run_cluster_profile: boolean;
 }
 
+export interface DatasetDetailResponse {
+  dataset_id: string;
+  filename: string;
+  n_rows: number;
+  n_columns: number;
+  has_data_config: boolean;
+}
+
 // ======================================================================
 // structure.py
 // ======================================================================
@@ -332,6 +343,10 @@ export interface DemoDatasetDTO {
   name: string;
   title: string;
   description: string;
+  n_rows: number;
+  n_columns: number;
+  n_numerical: number;
+  n_categorical: number;
 }
 
 export interface DemoToolsResponse {
@@ -339,12 +354,31 @@ export interface DemoToolsResponse {
   demo_datasets: DemoDatasetDTO[];
 }
 
-export type DemoDatasetName = "blobs_2d" | "elongated_clusters" | "clinical_like";
+export interface InlineDatasetDTO {
+  columns: string[];
+  rows: Record<string, unknown>[];
+}
+
+export type DemoDatasetName = "iris" | "wine";
 
 export interface DemoStructureRunRequest {
-  dataset_name: DemoDatasetName;
+  dataset_name?: DemoDatasetName;
+  inline_dataset?: InlineDatasetDTO;
   n_clusters?: number;
   include_projection?: boolean;
+}
+
+export interface DemoStructureRunResponse {
+  dataset_label: string;
+  n_observations: number;
+  n_features: number;
+  feature_names: string[];
+  labels: number[];
+  metrics: Record<string, MetricValue>;
+  embedding: EmbeddingPointDTO[] | null;
+  clustered_rows: Record<string, unknown>[];
+  success: boolean;
+  error: string | null;
 }
 
 export interface EmbeddingPointDTO {
@@ -352,14 +386,27 @@ export interface EmbeddingPointDTO {
   y: number;
 }
 
-export interface DemoStructureRunResponse {
-  dataset_name: string;
-  n_observations: number;
-  n_features: number;
-  feature_names: string[];
-  labels: number[];
-  metrics: Record<string, MetricValue>;
-  embedding: EmbeddingPointDTO[] | null;
-  success: boolean;
-  error: string | null;
+export interface DemoColumnSummaryDTO {
+  name: string;
+  numerical: boolean;
+  categorical: boolean;
+}
+
+export interface DemoDatasetDTO {
+  name: string;
+  title: string;
+  description: string;
+  n_rows: number;
+  n_columns: number;
+  n_numerical: number;
+  n_categorical: number;
+  columns: DemoColumnSummaryDTO[];
+}
+
+export interface DemoStructureRunRequest {
+  dataset_name?: DemoDatasetName;
+  inline_dataset?: InlineDatasetDTO;
+  excluded_columns?: string[];
+  n_clusters?: number;
+  include_projection?: boolean;
 }

@@ -1,14 +1,3 @@
-/**
- * synclair-gui frontend DemoCard
- * -------------------------------------
- *
- * Self-contained interactive card: runs a single public demo
- * (POST /demo/structure/run) for a given dataset, and renders the
- * resulting metrics + a colored scatter plot of the PCA embedding (if
- * present). Fully public/stateless -- no auth, no dataset_store/job
- * polling involved (the endpoint itself is synchronous).
- */
-
 import { useMutation } from "@tanstack/react-query";
 import {
   CartesianGrid,
@@ -21,7 +10,7 @@ import {
 } from "recharts";
 
 import { runDemoStructure } from "../api/client";
-import type { DemoDatasetDTO, DemoStructureRunResponse } from "../types/api";
+import type { DemoDatasetDTO, DemoStructureRunResponse, DemoDatasetName } from "../types/api";
 
 const CLUSTER_COLORS = ["#2563eb", "#dc2626", "#16a34a", "#d97706", "#7c3aed", "#0891b2"];
 
@@ -41,9 +30,7 @@ export function DemoCard({ dataset }: { dataset: DemoDatasetDTO }) {
   const mutation = useMutation({
     mutationFn: () =>
       runDemoStructure({
-        dataset_name: dataset.name as DemoStructureRunResponse["dataset_name"] extends string
-          ? "blobs_2d" | "elongated_clusters" | "clinical_like"
-          : never,
+        dataset_name: dataset.name as DemoDatasetName,
         n_clusters: 3,
         include_projection: true,
       }),

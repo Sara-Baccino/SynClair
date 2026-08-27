@@ -17,14 +17,24 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 
 import type { DataConfigDTO } from "../types/api";
 
+export interface LastRunConfig {
+  algorithm: string;
+  primaryParam: number;
+  includeProjection: boolean;
+}
+
 interface WorkspaceContextValue {
   datasetId: string | null;
   filename: string | null;
   dataConfig: DataConfigDTO | null;
+  selectedModuleId: string | null;
   jobId: string | null;
+  lastRunConfig: LastRunConfig | null;
   setDataset: (datasetId: string, filename: string) => void;
   setDataConfig: (dataConfig: DataConfigDTO) => void;
+  setSelectedModule: (moduleId: string) => void;
   setJobId: (jobId: string) => void;
+  setLastRunConfig: (config: LastRunConfig) => void;
   reset: () => void;
 }
 
@@ -35,11 +45,16 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [filename, setFilename] = useState<string | null>(null);
   const [dataConfig, setDataConfigState] = useState<DataConfigDTO | null>(null);
   const [jobId, setJobIdState] = useState<string | null>(null);
+  const [lastRunConfig, setLastRunConfigState] = useState<LastRunConfig | null>(null);
+  const [selectedModuleId, setSelectedModuleIdState] = useState<string | null>(null);
+
+  function setLastRunConfig(config: LastRunConfig): void {
+    setLastRunConfigState(config);
+  }
 
   function setDataset(newDatasetId: string, newFilename: string): void {
     setDatasetId(newDatasetId);
     setFilename(newFilename);
-    // A new dataset invalidates any previously built config/job.
     setDataConfigState(null);
     setJobIdState(null);
   }
@@ -52,21 +67,32 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     setJobIdState(newJobId);
   }
 
+  function setSelectedModule(moduleId: string): void {
+    setSelectedModuleIdState(moduleId);
+    setJobIdState(null);
+  }
+
   function reset(): void {
     setDatasetId(null);
     setFilename(null);
     setDataConfigState(null);
     setJobIdState(null);
+    setLastRunConfigState(null);
+    setSelectedModuleIdState(null);
   }
 
   const value: WorkspaceContextValue = {
     datasetId,
     filename,
     dataConfig,
+    selectedModuleId,
     jobId,
+    lastRunConfig,
     setDataset,
     setDataConfig,
+    setSelectedModule,
     setJobId,
+    setLastRunConfig,
     reset,
   };
 

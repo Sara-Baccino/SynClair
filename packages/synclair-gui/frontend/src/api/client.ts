@@ -24,6 +24,7 @@ import type {
   StructureRunRequest,
   StructureRunResponse,
   TokenResponse,
+  DatasetDetailResponse,
 } from "../types/api";
 
 export const AUTH_TOKEN_STORAGE_KEY = "synclair_token";
@@ -218,6 +219,8 @@ export async function downloadAuthenticatedFile(
   URL.revokeObjectURL(objectUrl);
 }
 
+
+
 // ======================================================================
 // demo.py
 // ======================================================================
@@ -226,11 +229,13 @@ export function getDemoTools(signal?: AbortSignal): Promise<DemoToolsResponse> {
   return apiFetch<DemoToolsResponse>("/demo/tools", { signal });
 }
 
-export function runDemoStructure(
-  request: DemoStructureRunRequest
-): Promise<DemoStructureRunResponse> {
+export function runDemoStructure(request: DemoStructureRunRequest): Promise<DemoStructureRunResponse> {
   return apiFetch<DemoStructureRunResponse>("/demo/structure/run", {
     method: "POST",
     body: request,
   });
+}
+
+export function getDataset(datasetId: string, signal?: AbortSignal): Promise<DatasetDetailResponse> {
+  return apiFetch<DatasetDetailResponse>(`/datasets/${datasetId}`, { signal });
 }

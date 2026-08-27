@@ -42,7 +42,7 @@ def test_structure_router_is_mounted() -> None:
 
 def test_demo_router_is_mounted() -> None:
     client = TestClient(create_app())
-    response = client.get("/demo/ping")
+    response = client.get("/demo/tools")
     assert response.status_code == 200
 
 

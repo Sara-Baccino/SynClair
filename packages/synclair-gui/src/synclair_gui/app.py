@@ -19,6 +19,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from synclair_gui.routers import auth, datasets, demo, structure
 
+from fastapi.middleware.cors import CORSMiddleware
+
+
+
 __all__ = ["app", "create_app"]
 
 _DEFAULT_DEV_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"
@@ -63,3 +67,11 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://synclair.vercel.app"],  # Il tuo URL frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

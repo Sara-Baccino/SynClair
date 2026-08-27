@@ -57,3 +57,11 @@ reports/
 # Temporary
 tmp/
 temp/
+
+# Files
+*.txt
+*.pdf
+*.pptx
+test.csv
+
+public/
