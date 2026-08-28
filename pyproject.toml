@@ -3,9 +3,15 @@ name = "synclair"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "code2flow>=2.5.1",
     "fastapi>=0.141.1",
     "fastexcel>=0.21.0",
+    "pydeps>=3.0.7",
+    "pylint>=4.0.7",
     "python-multipart>=0.0.32",
+    "sphinx>=9.1.0",
+    "sphinx-rtd-theme>=3.1.0",
+    "sphinxcontrib-mermaid>=2.1.0",
     "uvicorn>=0.52.4",
     "xlsx2csv>=0.8.6",
     "xlsxwriter>=3.2.9",
