@@ -1,0 +1,58 @@
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches: ["main"]  # Modifica se il tuo ramo principale si chiama "master"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python e uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Installare le dipendenze
+        run: |
+          uv sync --all-packages
+
+      - name: Generare API e compilare Sphinx HTML
+        run: |
+          export PYTHONPATH="packages/synclair-core/src:packages/synclair-structure/src:packages/synclair-gui/src:packages/synclair-reporting/src"
+          
+          uv run sphinx-apidoc -f -o docs/source/api/core packages/synclair-core/src/synclair_core
+          uv run sphinx-apidoc -f -o docs/source/api/structure packages/synclair-structure/src/synclair_structure
+          uv run sphinx-apidoc -f -o docs/source/api/gui packages/synclair-gui/src/synclair_gui
+          uv run sphinx-apidoc -f -o docs/source/api/reporting packages/synclair-reporting/src/synclair_reporting
+
+          uv run sphinx-build -b html docs/source docs/build/html
+
+      - name: Configurare Pages
+        uses: actions/configure-pages@v5
+
+      - name: Caricare artifact HTML
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/build/html'
+
+      - name: Pubblicare su GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
