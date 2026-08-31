@@ -18,6 +18,7 @@ import type {
   DemoStructureRunResponse,
   DemoToolsResponse,
   ParseConfigRequest,
+  FromArtifactRequest,
   ParseConfigResponse,
   StructureJobStatusResponse,
   StructureResultResponse,
@@ -220,7 +221,12 @@ export async function downloadAuthenticatedFile(
 }
 
 
-
+export function createDatasetFromArtifact(request: FromArtifactRequest): Promise<DatasetUploadResponse> {
+  return apiFetch<DatasetUploadResponse>("/datasets/from-artifact", {
+    method: "POST",
+    body: request,
+  });
+}
 // ======================================================================
 // demo.py
 // ======================================================================

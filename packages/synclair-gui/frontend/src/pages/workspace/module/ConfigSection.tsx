@@ -47,24 +47,48 @@ function updateColumn(
 
 export function ConfigSection() {
   const navigate = useNavigate();
-  const { datasetId, filename, setDataConfig } = useWorkspace();
+  const { activeDatasetId, cart, setDataConfig } = useWorkspace();
+
+  const activeEntry = cart.find((item) => item.datasetId === activeDatasetId);
+  const filename = activeEntry?.filename ?? "Selected Dataset";
 
   const [columns, setColumns] = useState<ColumnInfoDTO[] | null>(null);
   const [validation, setValidation] = useState<ConfigValidationDTO | null>(null);
 
+  // Reset local state when active dataset changes from sidebar
+  useEffect(() => {
+    setColumns(null);
+    setValidation(null);
+  }, [activeDatasetId]);
+
   const datasetSummaryQuery = useQuery({
-    queryKey: ["dataset-summary", datasetId],
-    queryFn: ({ signal }) => getDataset(datasetId!, signal),
-    enabled: Boolean(datasetId),
+    queryKey: ["dataset-summary", activeDatasetId],
+    queryFn: ({ signal }) => getDataset(activeDatasetId!, signal),
+    enabled: Boolean(activeDatasetId),
   });
 
   const numericalCount = columns?.filter((c) => c.numerical).length ?? 0;
   const categoricalCount = columns?.filter((c) => c.categorical).length ?? 0;
 
   const buildMutation = useMutation({
-    mutationFn: () => parseConfig({ dataset_id: datasetId! }),
+    mutationFn: () => parseConfig({ dataset_id: activeDatasetId! }),
     onSuccess: (response) => {
-      setColumns(response.data_config.columns);
+      // Apply default strategies (Impute, Scaling on numerical, Encoding on categorical)
+      const columnsWithDefaults = response.data_config.columns.map((col) => ({
+        ...col,
+        missing_data_management: {
+          ...col.missing_data_management,
+          strategy: "impute" as const,
+        },
+        scaling: col.numerical
+          ? { enabled: true, method: "standard" as const }
+          : col.scaling,
+        encoding: col.categorical
+          ? { enabled: true, method: "one_hot" as const, order: null }
+          : col.encoding,
+      }));
+
+      setColumns(columnsWithDefaults);
       setValidation(response.validation);
     },
   });
@@ -72,7 +96,7 @@ export function ConfigSection() {
   const revalidateMutation = useMutation({
     mutationFn: (currentColumns: ColumnInfoDTO[]) =>
       parseConfig({
-        dataset_id: datasetId!,
+        dataset_id: activeDatasetId!,
         existing_config: toRawDataConfig(currentColumns),
       }),
     onSuccess: (response) => {
@@ -82,12 +106,12 @@ export function ConfigSection() {
   });
 
   useEffect(() => {
-    if (datasetId && columns === null && !buildMutation.isPending) {
+    if (activeDatasetId && columns === null && !buildMutation.isPending) {
       buildMutation.mutate();
     }
-  }, [datasetId, columns, buildMutation]);
+  }, [activeDatasetId, columns, buildMutation]);
 
-  if (!datasetId) {
+  if (!activeDatasetId) {
     return (
       <div className="text-slate-600">
         No dataset selected. Please go back to{" "}

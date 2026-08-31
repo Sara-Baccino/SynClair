@@ -410,3 +410,16 @@ export interface DemoStructureRunRequest {
   n_clusters?: number;
   include_projection?: boolean;
 }
+
+export interface RowFilterCondition {
+  column: string;
+  operator: "eq" | "ne" | "in" | "not_in" | "gt" | "gte" | "lt" | "lte";
+  value: unknown;
+}
+
+export interface FromArtifactRequest {
+  source_job_id: string;
+  artifact_name: string;
+  row_filters?: RowFilterCondition[];
+  new_filename?: string;
+}

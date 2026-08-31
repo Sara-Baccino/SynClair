@@ -1,19 +1,3 @@
-/**
- * synclair-gui frontend Step2ConfigurePage
- * -----------------------------------------------
- *
- * Workspace Step 2: build/validate the DataConfig for the dataset
- * uploaded in Step 1 (POST /datasets/parse-config), let the user adjust
- * per-column settings and re-validate, then pick a clustering algorithm
- * and launch the analysis (POST /structure/run), storing the resulting
- * job_id in WorkspaceContext before navigating to Step 3.
- *
- * Column renaming (new_name) is intentionally not editable here: since
- * DataConfig requires the dict key to equal ColumnInfo.new_name (Phase
- * 1), supporting renames would require re-keying the whole config on
- * edit -- left as a future extension rather than silently omitted.
- */
-
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -32,11 +16,6 @@ import type {
   StructureModuleConfig,
 } from "../../types/api";
 
-// ---------------------------------------------------------------------- //
-// Default configs -- mirror the exact Python defaults from
-// clustering_configs.py / projection_configs.py (Phase 6). Only the
-// "primary" parameter of each is exposed for editing in this step.
-// ---------------------------------------------------------------------- //
 const DEFAULT_CLUSTERING_CONFIGS: Record<ClusteringAlgorithmName, ClusteringConfig> = {
   hdbscan: {
     min_cluster_size: 15,
@@ -94,9 +73,6 @@ const MISSING_STRATEGIES: MissingStrategy[] = ["maintain", "drop", "impute", "re
 const SCALER_METHODS: Exclude<ScalerType, "none">[] = ["standard", "minmax", "robust"];
 const ENCODER_METHODS: Exclude<EncoderType, "none">[] = ["one_hot", "ordinal"];
 
-// ---------------------------------------------------------------------- //
-// DTO <-> raw core payload conversion
-// ---------------------------------------------------------------------- //
 function toRawDataConfig(columns: ColumnInfoDTO[]): Record<string, unknown> {
   const rawColumns: Record<string, unknown> = {};
   for (const column of columns) {
@@ -146,7 +122,10 @@ function buildClusteringConfig(
 
 export function Step2ConfigurePage() {
   const navigate = useNavigate();
-  const { datasetId, filename, setDataConfig, setJobId } = useWorkspace();
+  const { activeDatasetId, cart, setJobId } = useWorkspace();
+
+  const activeEntry = cart.find((entry) => entry.datasetId === activeDatasetId);
+  const filename = activeEntry?.filename ?? "Dataset";
 
   const [columns, setColumns] = useState<ColumnInfoDTO[] | null>(null);
   const [validation, setValidation] = useState<ConfigValidationDTO | null>(null);
@@ -155,7 +134,7 @@ export function Step2ConfigurePage() {
   const [includeProjection, setIncludeProjection] = useState(true);
 
   const buildMutation = useMutation({
-    mutationFn: () => parseConfig({ dataset_id: datasetId! }),
+    mutationFn: () => parseConfig({ dataset_id: activeDatasetId! }),
     onSuccess: (response) => {
       setColumns(response.data_config.columns);
       setValidation(response.validation);
@@ -165,7 +144,7 @@ export function Step2ConfigurePage() {
   const revalidateMutation = useMutation({
     mutationFn: (currentColumns: ColumnInfoDTO[]) =>
       parseConfig({
-        dataset_id: datasetId!,
+        dataset_id: activeDatasetId!,
         existing_config: toRawDataConfig(currentColumns),
       }),
     onSuccess: (response) => {
@@ -194,7 +173,7 @@ export function Step2ConfigurePage() {
       };
 
       return runStructure({
-        dataset_id: datasetId!,
+        dataset_id: activeDatasetId!,
         module_config: moduleConfig as unknown as Record<string, unknown>,
       });
     },
@@ -205,13 +184,13 @@ export function Step2ConfigurePage() {
   });
 
   useEffect(() => {
-    if (datasetId && columns === null && !buildMutation.isPending) {
+    if (activeDatasetId && columns === null && !buildMutation.isPending) {
       buildMutation.mutate();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datasetId]);
+  }, [activeDatasetId]);
 
-  if (!datasetId) {
+  if (!activeDatasetId) {
     return (
       <div className="min-h-screen bg-slate-50 p-10">
         <p className="text-slate-600">
@@ -474,8 +453,16 @@ export function Step2ConfigurePage() {
                     checked={includeProjection}
                     onChange={(e) => setIncludeProjection(e.target.checked)}
                   />
-                  <span className="text-sm text-slate-600">Include 2D PCA projection</span>
+                  <span className="text-sm text-slate-600">Include PCA Projection</span>
                 </label>
+
+                <button
+                  onClick={() => runMutation.mutate()}
+                  disabled={runMutation.isPending}
+                  className="rounded bg-blue-600 px-4 py-2 text-sm text-white disabled:opacity-50"
+                >
+                  {runMutation.isPending ? "Starting analysis..." : "Run analysis →"}
+                </button>
               </div>
 
               {runMutation.isError && (
@@ -483,19 +470,6 @@ export function Step2ConfigurePage() {
                   Failed to start the analysis. Please check your configuration.
                 </p>
               )}
-
-              <button
-                onClick={() => {
-                  const rawConfig = toRawDataConfig(columns);
-                  setDataConfig({ columns } as never);
-                  void rawConfig; // kept for clarity: server already holds this config from the last revalidate
-                  runMutation.mutate();
-                }}
-                disabled={runMutation.isPending}
-                className="mt-6 rounded bg-blue-600 px-4 py-2 text-sm text-white disabled:opacity-50"
-              >
-                {runMutation.isPending ? "Starting..." : "Run analysis →"}
-              </button>
             </div>
           )}
         </>

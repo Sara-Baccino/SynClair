@@ -1,27 +1,15 @@
-// Identico a Step1UploadPage.tsx, unica differenza nel pulsante finale:
-
-/**
- * synclair-gui frontend Step1UploadPage
- * ---------------------------------------------
- *
- * Workspace Step 1: upload a CSV/Parquet dataset (POST /datasets/upload,
- * authenticated), show a preview, and store dataset_id/filename in
- * WorkspaceContext so Step 2 can build/validate a DataConfig for it.
- */
-
 import { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { uploadDataset } from "../../api/client";
 import { useWorkspace } from "../../context/WorkspaceContext";
 import type { DatasetUploadResponse } from "../../types/api";
-import { Link } from "react-router-dom";
 
 export function DatasetPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { setDataset } = useWorkspace();
+  const { addToCart } = useWorkspace();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const isDemo = searchParams.get("mode") === "demo";
@@ -29,7 +17,11 @@ export function DatasetPage() {
   const mutation = useMutation<DatasetUploadResponse, unknown, File>({
     mutationFn: (file: File) => uploadDataset(file),
     onSuccess: (response) => {
-      setDataset(response.dataset_id, response.filename);
+      addToCart({
+        datasetId: response.dataset_id,
+        filename: response.filename,
+        origin: { kind: "upload" },
+      });
     },
   });
 
@@ -128,15 +120,15 @@ export function DatasetPage() {
           <button
             onClick={() => navigate("/workspace/modules")}
             className="mt-6 rounded bg-blue-600 px-4 py-2 text-sm text-white"
-            >
+          >
             Continue to module selection →
-            </button>
+          </button>
 
-            <div className="mt-6 flex justify-end">
-              <Link to="/" className="rounded border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">
-                ← Back to Home
-              </Link>
-            </div>
+          <div className="mt-6 flex justify-end">
+            <Link to="/" className="rounded border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">
+              ← Back to Home
+            </Link>
+          </div>
         </div>
       )}
     </div>

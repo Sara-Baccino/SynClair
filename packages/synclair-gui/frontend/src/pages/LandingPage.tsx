@@ -144,17 +144,17 @@ export function LandingPage() {
         {/* 2. HERO SECTION */}
         <section id="hero" className="pt-36 pb-24 px-6 text-center max-w-6xl mx-auto flex flex-col items-center justify-center min-h-[90vh]">
           <div className="max-w-4xl mx-auto flex flex-col items-center">
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6 select-none bg-gradient-to-r from-purple-600 via-pink-600 to-amber-400 bg-clip-text text-transparent">
+            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6 select-none bg-gradient-to-r from-violet-500 via-pink-500 to-amber-400 bg-clip-text text-transparent">
               SynClair
             </h1>
 
-            <h3 className="text-xl sm:text-4xl font-semibold text-slate-800 mb-8 leading-tight">
+            <h3 className="text-xl sm:text-3xl font-semibold text-slate-800 mb-8 leading-tight">
               Transform complex data into clear decisions.<br />
 
             </h3>
             <p className="text-base sm:text-lg text-slate-600 font-normal max-w-2xl leading-relaxed mb-10">
-              Analyze the structure, quality, and relationships of your data in a single platform. <br/>
-              No coding, no complex configurations.
+              Analyze the structure, quality, and relationships of your data <br/> in one modular workspace. <br/>
+              No coding. No fragmented tools.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-16">
@@ -195,7 +195,7 @@ export function LandingPage() {
                 What is SynClair?
               </h3>
 
-              <p className="text-lg sm:text-xl text-slate-800 font-semibold leading-relaxed mb-8">
+              <p className="text-lg sm:text-2xl text-slate-800 font-semibold leading-relaxed mb-8">
                 <span className="bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
                   A modular environment for interactive data analysis.
                 </span>
@@ -203,19 +203,27 @@ export function LandingPage() {
 
               <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed mb-10">
                 
-                SynClair brings datasets, analytical tools, and results into a single unified workspace. <br/>
-                Chain outputs into new modules, compare results side-by-side, and iterate seamlessly without ever starting from scratch.
-                
+                SynClair brings datasets, analytical tools, configurations and results  <br/> into a 
+                single workspace designed for continuous exploration. <br/> <br/> 
+
+                <p className="text-lg sm:text-2xl text-slate-800 font-semibold leading-relaxed mb-8">
+                <span className="bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
+                  Bringing clarity to your data.
+                </span>
+              </p>
+
+                Start from a dataset, inspect its structure, explore its quality, uncover patterns and relationships. 
+                Then reuse what you discover as input for the next analysis.              
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
                 {[
-                  { title: "Explore and Clean", desc: "Inspect distributions, detect missingness, and analyze dataset structure." },
-                  { title: "Connect and Group", desc: "Discover hidden clusters, match datasets, and map complex network relationships." },
-                  { title: "Synthesize & Report", desc: "Consolidate analytical results into clear metrics, visual summaries, and reports." },
+                  { title: "Explore Data Quality", desc: "Inspect missingness, distributions, inconsistencies and structural issues before and during analysis." },
+                  { title: "Understand Structure", desc: "Reveal patterns, formats, clusters, latent dimensions and other characteristics that shape your data." },
+                  { title: "Discover Relationships", desc: "Compare populations, connect records, analyze dependencies and explore relationships across observations and datasets." },
                 ].map((cat) => (
                   <div key={cat.title} className="bg-white/70 backdrop-blur-md border border-white/50 p-6 rounded-xl shadow-sm">
-                    <h5 className="text-2xl font-semibold bg-gradient-to-r from-purple-600 to-pink-400 bg-clip-text text-transparent mb-2">
+                    <h5 className="text-2xl font-semibold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent mb-2">
                       {cat.title}
                     </h5>
                     <p className="text-xs text-slate-600 leading-relaxed">
@@ -228,31 +236,39 @@ export function LandingPage() {
             <div className="text-center max-w-3xl mx-auto mb-12">
             
             <h4 className="text-xs font-semibold uppercase tracking-widest bg-gradient-to-r from-purple-600 to-amber-400 bg-clip-text text-transparent mb-6">
-                Workflow
+                A workflow that does not end
             </h4>
 
             <h3 className="text-3xl sm:text-4xl font-semibold text-slate-800 mb-6">
                 How SynClair works
             </h3>
 
-              <p className="text-base sm:text-lg text-slate-600 font-semibold leading-relaxed mb-4">
-                Combine specialized modules across three core dimensions: <br/>
-                <strong className="text-purple-600 font-semibold">Data Quality</strong>, <strong className="text-pink-600 font-semibold">Structure</strong> and <strong className="text-amber-500 font-semibold">Relationships</strong>.
+              <p className="text-base sm:text-2xl text-slate-600 font-semibold leading-relaxed mb-4">
+                <span className="bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
+                  You build your own analytical path.
+                </span>
               </p>
 
               <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed mb-6">
-                Connect tools in any order, refine parameters on the fly, and make complex datasets{" "}
-                <span className="bg-gradient-to-r from-purple-600 to-amber-400 bg-clip-text text-transparent font-semibold">visible</span>,{" "}
-                <span className="bg-gradient-to-r from-purple-600 to-amber-400 bg-clip-text text-transparent font-semibold">measurable</span> and{" "}
-                <span className="bg-gradient-to-r from-purple-600 to-amber-400 bg-clip-text text-transparent font-semibold">interpretable</span>.
+                SynClair is built around analytical modules that can be used independently <br/>
+                or combined with others to create a workflow that evolves with your analysis. <br/> There is no single fixed path.  <br/> <br/>
               </p>
 
-            </div>
+              <p className="text-base sm:text-2xl text-slate-600 font-semibold leading-relaxed mb-4">
+                <span className="bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
+                  A result is not necessarily the end of an analysis.
+                </span>
+              </p>
 
-            <div className="my-16 p-8 bg-grey/70 backdrop-blur-md border border-white/50 rounded-2xl shadow-sm">
-              <h4 className="text-xs font-semibold uppercase tracking-widest text-slate-500 text-center mb-8">
-                A Modular Approach to Data Understanding
-              </h4>
+              <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed mb-8">
+                Results can be inspected, compared, reused and refined. <br/>
+                A transformed dataset, an embedding, a set of matches or another analytical output <br/>
+                can become the starting point for the next step. <br/>
+                Synclair allows you to explore the same data with different tools <br/> without starting from scratch. <br/> <br/>
+                
+              </p>
+
+            
               <div className="flex flex-col items-center">
                 <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-amber-400 bg-clip-text text-transparent font-extrabold text-sm">
                   SynClair
@@ -293,13 +309,19 @@ export function LandingPage() {
 
                 <div className="w-0.5 h-8 bg-slate-300 my-1"></div>
                 <div className="px-6 py-2 rounded-lg bg-white border border-white/60 text-slate-800 font-semibold text-xs tracking-wider shadow-xs">
-                  UNDERSTANDING
+                  ANALYZE & COMPARE
                 </div>
-                <div className="w-0.5 h-6 bg-slate-300 my-1"></div>
-                <div className="px-5 py-1.5 rounded-lg bg-white/80 border border-white/60 text-blue-600 text-xs font-medium shadow-xs">
-                  Reporting & Insights
+
+              <div className="w-0.5 h-8 bg-slate-300 my-1"></div>
+                <div className="px-5 py-2 rounded-lg bg-white/80 border border-white/60 text-blue-700 text-xs font-medium shadow-xs">
+                  ↺ REUSE & ITERATE
                 </div>
               </div>
+
+              <p className="text-base sm:text-lg text-slate-600 font-semibold leading-relaxed mt-10">
+                One workspace. Multiple perspectives. Reusable results.
+              </p>
+
             </div>
             </div>
           </div>
@@ -308,7 +330,7 @@ export function LandingPage() {
         {/* 4. ANALYTICAL MODULES */}
         <section id="modules" className="w-full py-24 px-6 border-t border-white/40 bg-white/30 backdrop-blur-sm">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
+            <div className="text-center mb-4">
               <h4 className="text-xs font-semibold uppercase tracking-widest bg-gradient-to-r from-purple-600 to-amber-400 bg-clip-text text-transparent mb-6">
                 Modules
               </h4>
@@ -317,34 +339,35 @@ export function LandingPage() {
               </h3>
               <p className="text-lg sm:text-xl text-slate-800 font-semibold leading-relaxed mb-6">
                 <span className="bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
-                  One workspace. Many analytical paths.
+                  Specialized tools. Connected analysis.
                 </span>
               </p>
               <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed mb-10">
-                Modular and composable analytical tools for deep dataset understanding. <br/> 
-                Select a module below to inspect its functionalities.
+                Each module explores a different aspect of your data. <br/>
+                Use them independently, or combine their outputs to build a broader analytical view. <br/> <br/> 
+                Select a module below to discover its functionalities.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 {
-                  id: "structure", title: "Data Structure", subtitle: "Understand how your dataset is built.", tags: ["data types", "formats", "cardinality", "distributions", "dimensionality"], path: "/modules/data-structure"
-                },
-                {
                   id: "missingness", title: "Missingness & Quality", subtitle: "Understand missing data patterns, quality indicators and structural inconsistencies.", tags: ["missingness patterns", "correlations", "cleaning", "consistency checks"], path: "/modules/missingness"
                 },
                 {
-                  id: "patterns", title: "Pattern Discovery", subtitle: "Reveal hidden structures in your data.", tags: ["K-Means", "HDBSCAN", "GMM", "PCA", "UMAP", "anomaly detection"], path: "/modules/clustering-analytics"
+                  id: "structure", title: "Data Structure", subtitle: "Reveal hidden structures in your data.", tags: ["K-Means", "HDBSCAN", "GMM", "PCA", "UMAP", "anomaly detection"], path: "/modules/clustering-analytics"
                 },
                 {
-                  id: "networks", title: "Network Analysis", subtitle: "Explore relationships between entities.", tags: ["graph construction", "centrality", "communities", "network metrics"], path: "/modules/network-analysis"
+                  id: "patterns", title: "Pattern Discovery", subtitle: "Understand how your dataset is built.", tags: ["data types", "formats", "cardinality", "distributions", "dimensionality"], path: "/modules/data-structure"
                 },
                 {
                   id: "constraints", title: "Constraint Discovery", subtitle: "Find rules your data appears to follow.", tags: ["structural constraints", "dependencies", "consistency rules"], path: "/modules/constraint-discovery"
                 },
                 {
                   id: "matching", title: "Dataset Matching", subtitle: "Identify corresponding records across datasets.", tags: ["record linkage", "entity resolution", "similarity", "matching confidence"], path: "/modules/dataset-matching"
+                },
+                {
+                  id: "networks", title: "Network Analysis", subtitle: "Explore relationships between entities.", tags: ["graph construction", "centrality", "communities", "network metrics"], path: "/modules/network-analysis"
                 },
                 {
                   id: "comparison", title: "Dataset Comparison", subtitle: "Understand how two datasets differ.", tags: ["schema comparison", "distribution comparison", "missingness"], path: "/modules/dataset-comparison"
@@ -362,12 +385,12 @@ export function LandingPage() {
                     <h4 className="text-lg font-semibold text-slate-800 mb-2 group-hover:text-amber-600 transition">
                       {mod.title}
                     </h4>
-                    <p className="text-xs text-slate-600 mb-4 leading-relaxed font-normal">
+                    <p className="text-xs text-slate-800 mb-4 leading-relaxed font-normal">
                       {mod.subtitle}
                     </p>
                     <div className="flex flex-wrap gap-1.5 mb-6">
                       {mod.tags.map((t) => (
-                        <span key={t} className="text-[10px] bg-white/80 text-slate-600 px-2 py-0.5 rounded border border-white/60 font-medium">
+                        <span key={t} className="text-[10px] bg-white/60 text-blue-400 px-2 py-0.5 rounded border border-white/50 font-medium">
                           {t}
                         </span>
                       ))}
@@ -392,7 +415,8 @@ export function LandingPage() {
               Try SynClair in 2 Minutes
             </h2>
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
-              Explore the platform with a preconfigured demo dataset. Test algorithms, missingness inspections, and interactive outputs without uploading your own data.
+              Explore SynClair with toy datasets and preconfigured analytical workflows. <br/>
+              Select a module, experiment with its parameters, inspect intermediate outputs and see how results can lead to the next analysis.
             </p>
             <button
               onClick={() => {
@@ -420,11 +444,10 @@ export function LandingPage() {
 
             <div className="mb-12 bg-white/70 backdrop-blur-md border border-white/50 p-8 sm:p-10 rounded-2xl shadow-sm text-left">
               <h4 className="text-xl font-semibold text-slate-800 mb-4">
-                Analyze datasets, save, export and reuse your workflows with one click.
+                Upload your datasets, configure your analyses and explore results in a persistent workspace.
               </h4>
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed mb-4 font-normal">
-                The <strong className="text-slate-800 font-semibold">SynClair Workspace</strong> provides a workspace designed to transform raw and heterogenous datasets into actionable structural intelligence. 
-                From initial ingestion to final report export, every step is built for reproducibility and statistical clarity. <br/> <br/>
+                Save configurations, inspect intermediate artifacts, compare analytical outputs and reuse results across future modules. <br/> <br/>
                 Don't have an account? Register here: link.
               </p>
             </div>

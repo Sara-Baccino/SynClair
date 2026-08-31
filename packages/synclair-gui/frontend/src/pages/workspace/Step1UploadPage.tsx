@@ -1,12 +1,3 @@
-/**
- * synclair-gui frontend Step1UploadPage
- * ---------------------------------------------
- *
- * Workspace Step 1: upload a CSV/Parquet dataset (POST /datasets/upload,
- * authenticated), show a preview, and store dataset_id/filename in
- * WorkspaceContext so Step 2 can build/validate a DataConfig for it.
- */
-
 import { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -18,7 +9,7 @@ import type { DatasetUploadResponse } from "../../types/api";
 export function Step1UploadPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { setDataset } = useWorkspace();
+  const { addToCart } = useWorkspace();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const isDemo = searchParams.get("mode") === "demo";
@@ -26,7 +17,11 @@ export function Step1UploadPage() {
   const mutation = useMutation<DatasetUploadResponse, unknown, File>({
     mutationFn: (file: File) => uploadDataset(file),
     onSuccess: (response) => {
-      setDataset(response.dataset_id, response.filename);
+      addToCart({
+        datasetId: response.dataset_id,
+        filename: response.filename,
+        origin: { kind: "upload" },
+      });
     },
   });
 
@@ -51,7 +46,6 @@ export function Step1UploadPage() {
         }
       </p>
 
-      {/* Se siamo in DEMO MODE mostra il banner dedicato invece dell'upload manuale */}
       {isDemo ? (
         <div className="mt-6 rounded-lg border border-cyan-200 bg-cyan-50/50 p-6">
           <p className="text-sm font-semibold text-cyan-900">Toy Dataset Attivo</p>
@@ -64,29 +58,28 @@ export function Step1UploadPage() {
           </button>
         </div>
       ) : (
+        <div className="mt-6 rounded-lg border border-dashed border-slate-300 bg-white p-8">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,.tsv,.parquet,.json,.xlsx,.xls"
+            onChange={handleFileChange}
+            className="block text-sm text-slate-600"
+          />
+          {selectedFileName && (
+            <p className="mt-2 text-sm text-slate-500">Selected: {selectedFileName}</p>
+          )}
 
-      <div className="mt-6 rounded-lg border border-dashed border-slate-300 bg-white p-8">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".csv,.tsv,.parquet,.json,.xlsx,.xls"
-          onChange={handleFileChange}
-          className="block text-sm text-slate-600"
-        />
-        {selectedFileName && (
-          <p className="mt-2 text-sm text-slate-500">Selected: {selectedFileName}</p>
-        )}
+          {mutation.isPending && (
+            <p className="mt-4 text-sm text-slate-500">Uploading and parsing dataset...</p>
+          )}
 
-        {mutation.isPending && (
-          <p className="mt-4 text-sm text-slate-500">Uploading and parsing dataset...</p>
-        )}
-
-        {mutation.isError && (
-          <p className="mt-4 text-sm text-red-600">
-            Upload failed. Please check the file format and try again.
-          </p>
-        )}
-      </div>
+          {mutation.isError && (
+            <p className="mt-4 text-sm text-red-600">
+              Upload failed. Please check the file format and try again.
+            </p>
+          )}
+        </div>
       )}
 
       {result && (

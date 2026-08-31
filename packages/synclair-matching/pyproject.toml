@@ -7,7 +7,9 @@ authors = [
     { name = "Sara Baccino", email = "baccinosara.2000@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pot>=0.9.7.post1",
+]
 
 [project.scripts]
 synclair-matching = "synclair_matching:main"

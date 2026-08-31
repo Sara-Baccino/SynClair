@@ -6,6 +6,7 @@ DataConfig build/validation. All endpoints require authentication.
 import io
 
 from fastapi.testclient import TestClient
+from tests.test_structure import _upload_and_configure, _wait_for_completion
 
 
 def _sample_csv_bytes() -> bytes:
@@ -82,6 +83,7 @@ def test_parse_config_without_token_returns_401(client: TestClient) -> None:
     response = client.post("/datasets/parse-config", json={"dataset_id": "irrelevant"})
     assert response.status_code == 401
 
+
 def test_get_dataset_returns_existing_dataset(client: TestClient, auth_headers: dict[str, str]) -> None:
     upload_response = client.post(
         "/datasets/upload",
@@ -121,4 +123,96 @@ def test_get_dataset_returns_404_for_unknown_id(client: TestClient, auth_headers
 
 def test_get_dataset_requires_authentication(client: TestClient) -> None:
     response = client.get("/datasets/irrelevant")
+    assert response.status_code == 401
+
+
+def test_create_dataset_from_artifact_promotes_clustered_dataset(
+    client: TestClient, auth_headers: dict[str, str]
+) -> None:
+    dataset_id = _upload_and_configure(client, auth_headers)
+
+    run_response = client.post(
+        "/structure/run",
+        json={
+            "dataset_id": dataset_id,
+            "module_config": {
+                "clustering_algorithm": "kmeans",
+                "clustering_config": {"n_clusters": 2, "random_state": 42},
+            },
+        },
+        headers=auth_headers,
+    )
+    job_id = run_response.json()["job_id"]
+    _wait_for_completion(client, job_id, auth_headers)
+
+    response = client.post(
+        "/datasets/from-artifact",
+        json={"source_job_id": job_id, "artifact_name": "clustered_dataset"},
+        headers=auth_headers,
+    )
+    assert response.status_code == 200
+    assert response.json()["dataset_id"] != dataset_id
+
+
+def test_create_dataset_from_artifact_with_row_filter(
+    client: TestClient, auth_headers: dict[str, str]
+) -> None:
+    dataset_id = _upload_and_configure(client, auth_headers)
+    run_response = client.post(
+        "/structure/run",
+        json={
+            "dataset_id": dataset_id,
+            "module_config": {
+                "clustering_algorithm": "kmeans",
+                "clustering_config": {"n_clusters": 2, "random_state": 42},
+            },
+        },
+        headers=auth_headers,
+    )
+    job_id = run_response.json()["job_id"]
+    _wait_for_completion(client, job_id, auth_headers)
+
+    response = client.post(
+        "/datasets/from-artifact",
+        json={
+            "source_job_id": job_id,
+            "artifact_name": "clustered_dataset",
+            "row_filters": [{"column": "cluster_label", "operator": "in", "value": [0]}],
+        },
+        headers=auth_headers,
+    )
+    assert response.status_code == 200
+    assert response.json()["n_rows"] > 0
+
+
+def test_create_dataset_from_artifact_unknown_artifact_returns_404(
+    client: TestClient, auth_headers: dict[str, str]
+) -> None:
+    dataset_id = _upload_and_configure(client, auth_headers)
+    run_response = client.post(
+        "/structure/run",
+        json={
+            "dataset_id": dataset_id,
+            "module_config": {
+                "clustering_algorithm": "kmeans",
+                "clustering_config": {"n_clusters": 2},
+            },
+        },
+        headers=auth_headers,
+    )
+    job_id = run_response.json()["job_id"]
+    _wait_for_completion(client, job_id, auth_headers)
+
+    response = client.post(
+        "/datasets/from-artifact",
+        json={"source_job_id": job_id, "artifact_name": "does_not_exist"},
+        headers=auth_headers,
+    )
+    assert response.status_code == 404
+
+
+def test_create_dataset_from_artifact_requires_auth(client: TestClient) -> None:
+    response = client.post(
+        "/datasets/from-artifact", json={"source_job_id": "irrelevant", "artifact_name": "x"}
+    )
     assert response.status_code == 401

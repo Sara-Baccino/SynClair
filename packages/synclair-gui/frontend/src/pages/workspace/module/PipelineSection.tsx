@@ -77,7 +77,7 @@ function buildClusteringConfig(
 
 export function PipelineSection() {
   const navigate = useNavigate();
-  const { datasetId, jobId, setJobId, setLastRunConfig } = useWorkspace();
+  const { activeDatasetId, jobId, setJobId } = useWorkspace();
 
   const [clusteringAlgorithm, setClusteringAlgorithm] = useState<ClusteringAlgorithmName>("kmeans");
   const [primaryParam, setPrimaryParam] = useState<number>(5);
@@ -114,13 +114,12 @@ export function PipelineSection() {
       };
 
       return runStructure({
-        dataset_id: datasetId!,
+        dataset_id: activeDatasetId!,
         module_config: moduleConfig as unknown as Record<string, unknown>,
       });
     },
     onSuccess: (response) => {
       setJobId(response.job_id);
-      setLastRunConfig({ algorithm: clusteringAlgorithm, primaryParam, includeProjection });
       navigate("/workspace/modules/structure/results");
     },
   });
@@ -129,7 +128,7 @@ export function PipelineSection() {
   const isBusy = runMutation.isPending || existingStatus === "pending" || existingStatus === "running";
   const hasCompletedRun = existingStatus === "completed";
 
-  if (!datasetId) {
+  if (!activeDatasetId) {
     return (
       <div className="text-slate-600">
         No dataset selected. Please go back to{" "}
